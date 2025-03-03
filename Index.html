@@ -1,0 +1,129 @@
+
+1. HTML (index.html)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors Directory</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container mt-4">
+        <h2 class="text-center">Doctors Directory</h2>
+        
+        <!-- Filters -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <select id="specialtyFilter" class="form-select">
+                    <option value="">All Specialties</option>
+                    <option value="Cardiologist">Cardiologist</option>
+                    <option value="Dermatologist">Dermatologist</option>
+                    <option value="General Practitioner">General Practitioner</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="locationFilter" class="form-control" placeholder="Enter Location">
+            </div>
+        </div>
+
+        <!-- Doctor Cards -->
+        <div id="doctorsList" class="row">
+            <!-- Doctors will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+---
+
+2. CSS (styles.css)
+
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card img {
+    height: 150px;
+    object-fit: cover;
+}
+
+
+---
+
+3. JavaScript (script.js)
+
+// Sample doctor data
+const doctors = [
+    { name: "Dr. John Doe", specialty: "Cardiologist", location: "New York", image: "https://via.placeholder.com/150", description: "Experienced in heart diseases." },
+    { name: "Dr. Jane Smith", specialty: "Dermatologist", location: "Los Angeles", image: "https://via.placeholder.com/150", description: "Expert in skin conditions." },
+    { name: "Dr. Emily White", specialty: "General Practitioner", location: "Chicago", image: "https://via.placeholder.com/150", description: "Handles general health concerns." }
+];
+
+const doctorsList = document.getElementById("doctorsList");
+const specialtyFilter = document.getElementById("specialtyFilter");
+const locationFilter = document.getElementById("locationFilter");
+
+// Function to display doctors
+function displayDoctors(filteredDoctors = doctors) {
+    doctorsList.innerHTML = "";
+    filteredDoctors.forEach(doctor => {
+        doctorsList.innerHTML += `
+            <div class="col-md-4">
+                <div class="card p-3 mb-3">
+                    <img src="${doctor.image}" class="card-img-top" alt="Doctor">
+                    <div class="card-body">
+                        <h5 class="card-title">${doctor.name}</h5>
+                        <p class="card-text"><strong>Specialty:</strong> ${doctor.specialty}</p>
+                        <p class="card-text"><strong>Location:</strong> ${doctor.location}</p>
+                        <p class="card-text">${doctor.description}</p>
+                        <button class="btn btn-primary" onclick="bookAppointment('${doctor.name}')">Book Appointment</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+// Filter doctors based on specialty and location
+function filterDoctors() {
+    const selectedSpecialty = specialtyFilter.value.toLowerCase();
+    const locationInput = locationFilter.value.toLowerCase();
+
+    const filteredDoctors = doctors.filter(doctor =>
+        (selectedSpecialty === "" || doctor.specialty.toLowerCase() === selectedSpecialty) &&
+        (locationInput === "" || doctor.location.toLowerCase().includes(locationInput))
+    );
+
+    displayDoctors(filteredDoctors);
+}
+
+// Event listeners for filtering
+specialtyFilter.addEventListener("change", filterDoctors);
+locationFilter.addEventListener("input", filterDoctors);
+
+// Function to book an appointment
+function bookAppointment(doctorName) {
+    alert(`Appointment booked with ${doctorName}!`);
+}
+
+// Initial display
+displayDoctors();
+
+
+---
+
